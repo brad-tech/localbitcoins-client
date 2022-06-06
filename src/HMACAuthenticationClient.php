@@ -1,9 +1,9 @@
 <?php
 
 /**
- * LocalbitcoinsHttpClient.php
+ * HMACAuthenticationClient.php
  * 
- * Contains the LocalbitcoinsHttpClient class
+ * Contains the HMACAuthenticationClient class
  * 
  * PHP Version ^8.0
  * 
@@ -27,7 +27,7 @@ use Symfony\Component\HttpClient\HttpClient;
  * @license  MIT https://mit-license.org/
  * @link     https://gihub.com/brad-tech/localbitcoins-client.git
  */
-class LocalbitcoinsHttpClient
+class HMACAuthenticationClient
 {
 
     const BASE_URL = "https://localbitcoins.com/api";
