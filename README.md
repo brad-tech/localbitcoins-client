@@ -32,16 +32,18 @@ initialize with the HMAC key and secret from Localbitcoins.
 
 ```php
 <?php
+
+// you can load the files dynamically
+require_once 'vendor/autoload.php';
+
 use Bradtech\LocalbitcoinsClient\HMACAuthenticationClient;
 
-define(HMAC_KEY, "<localbitcoins_hmac_key>");
-define(HMAC_SECRET, "<localbitcoins_hmac_secret>");
+$hmac_key = 'HMAC_KEY';
+$hmac_secret = 'HMAC_SECRET';
 
-$client = new HMACAuthenticationClient(HMAC_KEY, HMAC_SECRET);
+$client = new HMACAuthenticationClient($hmac_key, $hmac_secret);
 
-// get the wallet address
-$client->getWalletAddress();
+$data = $client->getWalletAddress();
 
-// etc...
-
+var_dump($data);
 ```
