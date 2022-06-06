@@ -1,0 +1,23 @@
+{
+    "name": "bradtech/localbitcoins-client",
+    "description": "A Http Client to authenticate with Localbitcoins API",
+    "type": "project",
+    "require": {
+        "symfony/http-client": "^6.1"
+    },
+    "require-dev": {
+        "monolog/monolog": "^3.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bradtech\\LocalbitcoinsClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "BRAD Technologies",
+            "email": "bradtech.ke@gmail.com"
+        }
+    ]
+}
