@@ -1,13 +1,22 @@
 # localbitcoins-client
 
-A Localbitcoins Client for PHP
+A Localbitcoins Client for PHP with minimal dependencies. Should work
+right off the box.
+
+Documentation for the Localbitcoins API can be found here: <https://localbitcoins.com/api-docs/>.
 
 ## Installing
 
 Make sure you have cURL enabled in your php environment.
 
 ```sh
-php --ri curl | grep "cURL support => enabled"
+php --ri curl
+```
+
+you should see this text:
+
+```text
+cURL support => enabled
 ```
 
 Install with composer
@@ -18,9 +27,8 @@ composer require bradtech/localbitcoins-client
 
 ## Usage
 
-To use the HMAC Authentication Client, create a new
-`HMACAuthenticationClient` object and initialize with
-the hmac key and secret from Localbitcoins.
+To use the HMAC Authentication Client, create a new`HMACAuthenticationClient` object and
+initialize with the HMAC key and secret from Localbitcoins.
 
 ```php
 <?php
