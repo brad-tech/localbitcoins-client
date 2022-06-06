@@ -40,7 +40,7 @@ define(HMAC_SECRET, "<localbitcoins_hmac_secret>");
 $client = new HMACAuthenticationClient(HMAC_KEY, HMAC_SECRET);
 
 // get the wallet address
-$client->getWalletAddr();
+$client->getWalletAddress();
 
 // etc...
 
