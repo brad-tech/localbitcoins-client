@@ -7,7 +7,7 @@ A Localbitcoins Client for PHP
 Install with composer
 
 ```console
-composer require bradtech/localbitcoins-client
+composer require bradtech/localbitcoins-client --with-all-dependencies
 ```
 
 ## Usage
