@@ -4,10 +4,16 @@ A Localbitcoins Client for PHP
 
 ## Installing
 
+Make sure you have cURL enabled in your php environment.
+
+```sh
+php --ri curl | grep "cURL support => enabled"
+```
+
 Install with composer
 
 ```console
-composer require bradtech/localbitcoins-client --with-all-dependencies
+composer require bradtech/localbitcoins-client
 ```
 
 ## Usage
