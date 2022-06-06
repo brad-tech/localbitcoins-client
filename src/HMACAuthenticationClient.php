@@ -16,8 +16,6 @@
 
 namespace Bradtech\LocalbitcoinsClient;
 
-use Symfony\Component\HttpClient\HttpClient;
-
 /**
  * Http Client for connecting to Localbitcoins
  * 
@@ -58,29 +56,30 @@ class HMACAuthenticationClient
      */
     public function getWalletAddr(): array
     {
-        $nonce = rand(0, 10000);
-        $sig = hash_hmac(
-            'sha256',
-            $this->_hmac_key . $this->_hmac_secret . $nonce,
-            ""
-        );
+        $requestUri = self::BASE_URL . '/wallet-addr';
 
-        $client = HttpClient::create();
-
-        $response = $client->request(
-            'GET',
-            self::BASE_URL . '/wallet-addr',
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $requestUri);
+        curl_setopt($ch, CURLOPT_SSH_COMPRESSION, true);
+        curl_setopt_array(
+            $ch,
             [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Authorization' => $sig,
-                ],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_URL => $requestUri
             ]
         );
 
-        // $statusCode = $response->getStatusCode();
-        // $content = $response->getContent();
+        $result = curl_exec($ch);
+        $data = unserialize($result);
 
-        return $response->toArray();
+        return $data;
+
+        // $nonce = rand(0, 10000);
+        // $sig = hash_hmac(
+        //     'sha256',
+        //     $this->_hmac_key . $this->_hmac_secret . $nonce,
+        //     ""
+        // );
     }
 }
