@@ -2,6 +2,7 @@
     "name": "bradtech/localbitcoins-client",
     "description": "A Http Client to authenticate with Localbitcoins API",
     "type": "project",
+    "version": "1.0.0",
     "require": {
         "symfony/http-client": "^6.1"
     },
