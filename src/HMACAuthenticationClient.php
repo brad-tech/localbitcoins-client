@@ -28,7 +28,7 @@ namespace Bradtech\LocalbitcoinsClient;
 class HMACAuthenticationClient
 {
 
-    const BASE_URL = "https://localbitcoins.com/api";
+    const BASE_URL = "https://localbitcoins.com";
 
     private $_hmac_key;
     private $_hmac_secret;
@@ -52,34 +52,90 @@ class HMACAuthenticationClient
      * The address is returned in the address key of the response. Note that this
      * may keep returning the same (unused) address if requested repeatedly.
      * 
-     * @return array
+     * @return mixed
      */
-    public function getWalletAddr(): array
+    public function getWalletAddress(): mixed
     {
-        $requestUri = self::BASE_URL . '/wallet-addr';
+        $apiEndpoint = '/api/wallet-addr';
+        // start: nonce
+        //
+        // this is a bit insecure but will ensure a constant increase in nonce 
+        // value according to the documentation:
+        //
+        // A nonce is an integer number, that needs to increase with every API 
+        // request. It's value has to always be greater than the previous request
+        $nonce = time();
+        // end: nonce
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $requestUri);
-        curl_setopt($ch, CURLOPT_SSH_COMPRESSION, true);
-        curl_setopt_array(
-            $ch,
-            [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_URL => $requestUri
-            ]
+        $params = "";
+
+        $signature = $this->_generateSignature($nonce, $apiEndpoint, $params);
+
+        return $this->_sendRequest($nonce, $apiEndpoint, $signature);
+    }
+
+    /**
+     * Send a generic request to the api endpoint.
+     * 
+     * @param $nonce       The nonce value
+     * @param $apiEndpoint The target endpoint
+     * @param $signature   The generated signature
+     * @param $method      HTTP Method to execute
+     * 
+     * @return mixed
+     */
+    private function _sendRequest($nonce, $apiEndpoint, $signature, $method = 'GET')
+    {
+        $headers = array(
+            "Apiauth-Key: $this->_hmac_key",
+            "Apiauth-Nonce: $nonce",
+            "Apiauth-Signature: $signature",
+            "Content-Type: application/x-www-form-urlencoded",
+            "cache-control: no-cache"
         );
 
-        $result = curl_exec($ch);
-        $data = unserialize($result);
+        $curl = curl_init();
+
+        $options = array(
+            CURLOPT_URL => self::BASE_URL . $apiEndpoint,
+            CURLOPT_CUSTOMREQUEST, $method,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_SSH_COMPRESSION => true,
+        );
+
+        curl_setopt_array($curl, $options);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $data = unserialize($response);
 
         return $data;
+    }
 
-        // $nonce = rand(0, 10000);
-        // $sig = hash_hmac(
-        //     'sha256',
-        //     $this->_hmac_key . $this->_hmac_secret . $nonce,
-        //     ""
-        // );
+    /**
+     * Generate a random uppercase HMAC signature.
+     * 
+     * @param $nonce       The required nonce value to generate the signature
+     * @param $apiEndpoint The API endpoint, for example, /api/wallet/.
+     * @param $params      URLEncoded API arguments
+     * 
+     * @return string
+     */
+    private function _generateSignature(
+        int $nonce,
+        string $apiEndpoint,
+        string $params
+    ): string {
+        $signature = '';
+
+        $signature = hash_hmac(
+            'sha256',
+            $nonce . $this->_hmac_key . $apiEndpoint. $params,
+            $this->_hmac_secret
+        );
+
+        return strtoupper($signature);
     }
 }
