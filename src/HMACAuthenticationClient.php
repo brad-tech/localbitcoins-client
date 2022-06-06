@@ -52,9 +52,9 @@ class HMACAuthenticationClient
      * The address is returned in the address key of the response. Note that this
      * may keep returning the same (unused) address if requested repeatedly.
      * 
-     * @return mixed
+     * @return array
      */
-    public function getWalletAddress(): mixed
+    public function getWalletAddress(): string|bool
     {
         $apiEndpoint = '/api/wallet-addr';
         // start: nonce
@@ -82,36 +82,38 @@ class HMACAuthenticationClient
      * @param $signature   The generated signature
      * @param $method      HTTP Method to execute
      * 
-     * @return mixed
+     * @return string|bool
      */
-    private function _sendRequest($nonce, $apiEndpoint, $signature, $method = 'GET')
-    {
+    private function _sendRequest(
+        $nonce,
+        $apiEndpoint,
+        $signature,
+        $method = 'GET'
+    ): string|bool {
         $headers = array(
             "Apiauth-Key: $this->_hmac_key",
             "Apiauth-Nonce: $nonce",
             "Apiauth-Signature: $signature",
             "Content-Type: application/x-www-form-urlencoded",
-            "cache-control: no-cache"
         );
 
-        $curl = curl_init();
+        $ch = curl_init(self::BASE_URL . $apiEndpoint);
 
         $options = array(
-            CURLOPT_URL => self::BASE_URL . $apiEndpoint,
-            CURLOPT_CUSTOMREQUEST, $method,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_CUSTOMREQUEST   => $method,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_HEADER          => true,
+            CURLOPT_HTTPHEADER      => $headers,
             CURLOPT_SSH_COMPRESSION => true,
         );
 
-        curl_setopt_array($curl, $options);
+        curl_setopt_array($ch, $options);
 
-        $response = curl_exec($curl);
-        curl_close($curl);
+        $result = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-        $data = unserialize($response);
-
-        return $data;
+        return $result;
     }
 
     /**
@@ -132,7 +134,7 @@ class HMACAuthenticationClient
 
         $signature = hash_hmac(
             'sha256',
-            $nonce . $this->_hmac_key . $apiEndpoint. $params,
+            $nonce . $this->_hmac_key . $apiEndpoint . $params,
             $this->_hmac_secret
         );
 
