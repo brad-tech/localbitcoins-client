@@ -3,12 +3,6 @@
     "description": "A Http Client to authenticate with Localbitcoins API",
     "type": "project",
     "version": "1.0.0",
-    "require": {
-        "symfony/http-client": "^6.1"
-    },
-    "require-dev": {
-        "monolog/monolog": "^3.0"
-    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
