@@ -9,15 +9,15 @@ Documentation for the Localbitcoins API can be found here: <https://localbitcoin
 
 Make sure you have cURL enabled in your php environment.
 
-```sh
+```console
 php --ri curl
 ```
 
-you should see this text:
+you should see this text on your terminal:
 
-```text
+`
 cURL support => enabled
-```
+`
 
 Install with composer
 
