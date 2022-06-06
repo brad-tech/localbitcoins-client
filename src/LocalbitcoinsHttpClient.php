@@ -1,5 +1,7 @@
 <?php
 /**
+ * LocalbitcoinsHttpClient.php
+ * 
  * Contains the LocalbitcoinsHttpClient class
  * 
  * PHP Version ^8.0
